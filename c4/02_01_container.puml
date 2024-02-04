@@ -1,17 +1,16 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
-
 SHOW_PERSON_PORTRAIT()
-LAYOUT_LEFT_RIGHT()
+' LAYOUT_LEFT_RIGHT()
 
 title Diagrama de container do SpotMusic
 
 Person(usuario, "Usuário do SpotMusic", "Usuário com conta ativa")
+Container(sm_mobile, "Aplicativo nativo", "kotlin/swift", "Acesso mobile do spotmusic")
 
 System_Boundary(c1, "SpotMusic") {    
-    Container(sm_mobile_android, "Aplicativo nativo", "kotlin", "Acesso mobile do spotmusic")
-    Container(sm_mobile_ios, "Aplicativo nativo", "swift", "Acesso mobile do spotmusic")
+
 
     Container(sm_gateway, "API Gateway", "", "Gateway para controle de throttling e redirecionamento de rotas")
 
@@ -30,26 +29,23 @@ System_Boundary(c1, "SpotMusic") {
     ContainerDb(sm_insights_db, "spotmusic-insights-db", "postgresql", "Banco de dados para salvar recomendações")        
 }
 
-Rel(usuario, sm_mobile_android, "Interage")
-Rel(usuario, sm_mobile_ios, "Interage")
-
-
-Rel(sm_mobile_android, sm_gateway, "Acessa", "HTTPS/JSON")
-Rel(sm_mobile_ios, sm_gateway, "Acessa", "HTTPS/JSON")
+Rel(usuario, sm_mobile, "Interage")
+Rel(sm_mobile, sm_gateway, "Acessa", "HTTPS/JSON")
 
 
 Rel(sm_gateway, sm_account_api, "Redireciona", "HTTPS/JSON")
 Rel(sm_gateway, sm_api, "Redireciona", "HTTPS/JSON")
+Rel(sm_gateway, sm_insights_api, "Redireciona", "HTTPS/JSON")
 
 Rel(sm_account_api, sm_account_db, "Leitura/Escrita", "PSYCOPG")
 
 Rel(sm_api, sm_db, "Leitura/Escrita", "PSYCOPG")
 Rel(sm_api, sm_blob, "Leitura", "HTTPS")
-Rel(sm_operations_worker, sm_blob, "Leitura", "HTTPS")
-Rel(sm_operations_worker, sm_db, "Leitura/Escrita", "HTTPS")
+Rel_Neighbor(sm_operations_worker, sm_blob, "Leitura", "HTTPS")
+Rel_Neighbor(sm_operations_worker, sm_db, "Leitura/Escrita", "HTTPS")
 Rel(sm_operations_worker, sm_ai_speech, "Transforma audio em texto", "HTTPS")
 
-Rel(sm_gateway, sm_insights_api, "Redireciona", "HTTPS/JSON")
+
 Rel(sm_insights_api, sm_insights_db, "Leitura dos dados de recomendações", "PSYCOPG")
 Rel(sm_insights_worker, sm_insights_db, "Escrita dos dados de recomendações", "PSYCOPG")
 
