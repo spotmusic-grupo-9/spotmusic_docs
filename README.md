@@ -1,5 +1,5 @@
 # SpotMusic
-
+ 
 . `SpotMusic`
 
 ├── spotmusic_docs  `documentação`
