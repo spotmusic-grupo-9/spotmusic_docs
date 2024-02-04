@@ -1,5 +1,4 @@
 # SpotMusic
-m
 
 . `SpotMusic`
 
