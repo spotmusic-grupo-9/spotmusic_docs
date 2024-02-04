@@ -1,0 +1,62 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+AddRelTag("async", $lineStyle=DashedLine())
+
+
+SHOW_PERSON_PORTRAIT()
+' LAYOUT_LEFT_RIGHT()
+
+title Diagrama de container do SpotMusic
+
+Person(usuario, "Usuário do SpotMusic", "Usuário com conta ativa")
+
+System_Boundary(c1, "SpotMusic") {
+    Container(sm_web, "Pagina web", "react", "Acesso web do spotmusic")
+    Container(sm_mobile, "Aplicativo nativo", "swift/kotlin", "Acesso mobile do spotmusic")
+
+    Container(sm_gateway, "API Gateway", "", "Gateway para controle de throttling e redirecionamento de rotas")
+
+    Container(sm_account_api, "sm-account-api", "python, gunicorn, flask", "Controle de permissões")
+    ContainerDb(sm_account_db, "sm-account-db", "mongodb", "Banco de dados para salvar o nivel de permissão e perfil dos usuários")
+
+    Container(sm_keycloack_api, "sm-keycloack-api", "java", "Controle de autenticação, validando usuário/senha e gerando tokens")
+    ContainerDb(sm_keycloack_db, "sm-keycloack-db", "PostgreSQL", "Banco de dados para salvar usuários/senhas")
+
+    Container(sm_insights_api, "sm-insights-api", "python, gunicorn, flask", "Recomendações de musicas e playlists")
+    Container(sm_insights_worker, "sm-insights-worker", "python, gunicorn", "Cria as recomendações de musicas e playlists")
+    ContainerDb(sm_insights_db, "sm-insights-db", "mongodb", "Banco de dados para salvar recomendações")
+
+    Container(sm_search_api, "sm-search-api", "python, gunicorn, flask", "buscas no Elasticsearch de dados quentes")
+    Container(sm_operations_api, "sm-operations-api", "python, gunicorn, flask", "gerenciamento e buscas de dados frios")
+    Container(sm_operations_worker, "sm-operations-worker", "python, gunicorn", "internalização de atualizações")
+    ContainerQueue(sm_operations_queue,"pubsub", "Topico: sm-operations-queue", "fila para alterações no banco")
+    ContainerDb(sm_operations_db, "sm-operations-db", "mongodb", "Banco de dados para salvar os dados de musicas e playlist")
+    
+}
+
+Rel(usuario, sm_web, "Usuário", "HTTPS")
+Rel(usuario, sm_mobile, "Usuário", "HTTPS")
+
+
+Rel(sm_web, sm_gateway, "Acessa", "HTTPS")
+Rel(sm_mobile, sm_gateway, "Acessa", "HTTPS")
+
+Rel(sm_gateway, sm_keycloack_api, "Redireciona", "HTTPS")
+Rel(sm_gateway, sm_account_api, "Redireciona", "HTTPS")
+Rel(sm_gateway, sm_insights_api, "Redireciona", "HTTPS")
+Rel(sm_gateway, sm_operations_api, "Redireciona", "HTTPS")
+Rel(sm_gateway, sm_search_api, "Redireciona", "HTTPS")
+
+Rel(sm_keycloack_api, sm_keycloack_db, "Leitura/Escrita", "JDBC")
+Rel(sm_account_api, sm_account_db, "Leitura/Escrita", "pymongo")
+Rel(sm_insights_api, sm_insights_db, "Leitura dos dados de recomendações", "pymongo")
+Rel(sm_insights_worker, sm_insights_db, "Escrita dos dados de recomendações", "pymongo")
+Rel(sm_operations_api, sm_operations_db, "Leitura", "pymongo")
+Rel(sm_operations_api, sm_operations_queue, "Publica mensagem de CRUD", "pull, json", $tags = "async")
+Rel_Neighbor(sm_operations_queue, sm_operations_worker, "Consome as mensages de CRUD", "pull, json", $tags = "async")
+Rel_Neighbor(sm_operations_queue, sm_search_api, "Consome as mensagens de CRUD para o ES", "webhook,json", $tags = "async")
+Rel(sm_operations_worker, sm_operations_db, "Escreve as alterações de CRUD no banco", "pymongo")
+
+
+
+@enduml

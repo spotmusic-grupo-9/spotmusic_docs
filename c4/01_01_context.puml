@@ -1,0 +1,15 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+SHOW_PERSON_PORTRAIT()
+LAYOUT_LEFT_RIGHT()
+
+title Diagrama de contexto do SpotMusic
+
+Person(usuario, "Usuário do SpotMusic", "Usuário com conta ativa")
+
+System(backend, "back-end", "Retorna autenticações, playlists e recomendações")
+
+Rel(usuario, backend, "Consome")
+
+@enduml
