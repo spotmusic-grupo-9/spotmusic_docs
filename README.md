@@ -1,7 +1,9 @@
 # SpotMusic
+
 Soluções em nuvem para compartilhamento de musicas e playlist 🎶
 
- ## Projetos e pastas
+## Projetos e pastas
+
 . `SpotMusic-grupo-9`
 
 ├── [spotmusic_docs](https://github.com/spotmusic-grupo-9/spotmusic_docs)  `documentação`
@@ -21,3 +23,7 @@ Soluções em nuvem para compartilhamento de musicas e playlist 🎶
 ├── [spotmusic_mobile_android](https://github.com/spotmusic-grupo-9/spotmusic_mobile_android) `aplicativo mobile android`
 
 ├── [spotmusic_mobile_ios](https://github.com/spotmusic-grupo-9/spotmusic_mobile_ios) `aplicativo mobile ios`
+
+## C4
+
+Utilize a extensão [PlantUML](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml) para visualizar os dados gerados pelas extensões `.puml` do projeto.
