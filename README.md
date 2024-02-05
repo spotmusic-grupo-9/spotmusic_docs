@@ -27,3 +27,6 @@ Soluções em nuvem para compartilhamento de musicas e playlist 🎶
 ## C4
 
 Utilize a extensão [PlantUML](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml) para visualizar os dados gerados pelas extensões `.puml` do projeto.
+
+## Commitlint
+Padrão de commits [link](https://github.com/conventional-changelog/commitlint/?tab=readme-ov-file#what-is-commitlint)
