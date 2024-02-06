@@ -9,24 +9,28 @@ title Diagrama de container do SpotMusic
 Person(usuario, "Usuário do SpotMusic", "Usuário com conta ativa")
 Container(sm_mobile, "Aplicativo nativo", "kotlin/swift", "Acesso mobile do spotmusic")
 
-System_Boundary(c1, "SpotMusic") {    
-
+System_Boundary(c1, "SpotMusic") {
 
     Container(sm_gateway, "API Gateway", "", "Gateway para controle de throttling e redirecionamento de rotas")
 
     Container(sm_account_api, "spotmusic-account-api", "python, fastAPI", "Controle de autenticação/permissão")
-    ContainerDb(sm_account_db, "spotmusic-account-db", "postgresql", "Banco de dados de usários")
 
     Container(sm_api, "spotmusic-api", "python, fastAPI", "API principal, retorno de musicas/playlists")
-    ContainerDb(sm_db, "spotmusic-db", "postgresql", "Banco de dados da base de musicas/playlists")
+
     ContainerDb(sm_blob, "spotmusic-blob", "storage account", "Banco de dados dos arquivos brutos de musicas")
 
     Container(sm_operations_worker, "spotmusic-operations-worker", "python, gunicorn, fastAPI", "Enriquecimento de dados através da conversão de audio em texto")
     Container(sm_ai_speech, "spotmusic-ai-speech", "speech services", "Serviço de conversão de audio em texto")
-   
+
     Container(sm_insights_api, "spotmusic-insights-api", "python, fastAPI", "Recomendações de musicas e playlists")
     Container(sm_insights_worker, "spotmusic-insights-worker", "python, gunicorn", "Cria as recomendações de musicas e playlists")
-    ContainerDb(sm_insights_db, "spotmusic-insights-db", "postgresql", "Banco de dados para salvar recomendações")        
+
+    Boundary(c2, "PostgreSQL Server") {
+        ContainerDb(sm_account_db, "spotmusic-account-db", "postgresql", "Banco de dados de usários")
+        ContainerDb(sm_db, "spotmusic-db", "postgresql", "Banco de dados da base de musicas/playlists")
+        ContainerDb(sm_insights_db, "spotmusic-insights-db", "postgresql", "Banco de dados para salvar recomendações")
+    }
+
 }
 
 Rel(usuario, sm_mobile, "Interage")

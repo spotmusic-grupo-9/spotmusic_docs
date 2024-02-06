@@ -8,8 +8,8 @@ title Diagrama de contexto do SpotMusic
 
 Person(usuario, "Usuário do SpotMusic", "Usuário com conta ativa")
 
-System(backend, "back-end", "Retorna autenticações, playlists e recomendações")
+System(mobile, "mobile", "playlists e musicas")
 
-Rel(usuario, backend, "Consome")
+Rel(usuario, mobile, "Acessa/consome")
 
 @enduml
