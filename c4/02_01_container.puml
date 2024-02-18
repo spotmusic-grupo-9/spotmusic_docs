@@ -13,6 +13,8 @@ System_Boundary(c1, "SpotMusic") {
 
     Container(sm_gateway, "API Gateway", "", "Gateway para controle de throttling e redirecionamento de rotas")
 
+    Container(sm_ddos, "DDOS Protection", "", "Proteção contra ataques de DDOS")
+ 
     Container(sm_account_api, "spotmusic-account-api", "python, fastAPI", "Controle de autenticação/permissão")
 
     Container(sm_api, "spotmusic-api", "python, fastAPI", "API principal, retorno de musicas/playlists")
@@ -34,7 +36,8 @@ System_Boundary(c1, "SpotMusic") {
 }
 
 Rel(usuario, sm_mobile, "Interage")
-Rel(sm_mobile, sm_gateway, "Acessa", "HTTPS/JSON")
+Rel(sm_mobile, sm_ddos, "Acessa", "HTTPS/JSON")
+Rel(sm_ddos, sm_gateway, "Acessa", "HTTPS/JSON")
 
 
 Rel(sm_gateway, sm_account_api, "Redireciona", "HTTPS/JSON")
