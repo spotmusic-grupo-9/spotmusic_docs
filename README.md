@@ -22,7 +22,7 @@ Soluções em nuvem para compartilhamento de musicas e playlist 🎶
 
 ├── [spotmusic_mobile_android](https://github.com/spotmusic-grupo-9/spotmusic_mobile_android) `aplicativo mobile android`
 
-├── [spotmusic_mobile_ios](https://github.com/spotmusic-grupo-9/spotmusic_mobile_ios) `aplicativo mobile ios`
+|__ [spotmusic_mobile_ios](https://github.com/spotmusic-grupo-9/spotmusic_mobile_ios) `aplicativo mobile ios`
 
 ## C4
 
