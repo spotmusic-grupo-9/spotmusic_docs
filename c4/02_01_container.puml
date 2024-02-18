@@ -8,6 +8,7 @@ title Diagrama de container do SpotMusic
 
 Person(usuario, "Usuário do SpotMusic", "Usuário com conta ativa")
 Container(sm_mobile, "Aplicativo nativo", "kotlin/swift", "Acesso mobile do spotmusic")
+Container(sm_web, "Aplicativo web", "react", "Acesso web do spotmusic")
 
 System_Boundary(c1, "SpotMusic") {
 
@@ -36,7 +37,9 @@ System_Boundary(c1, "SpotMusic") {
 }
 
 Rel(usuario, sm_mobile, "Interage")
+Rel(usuario, sm_web, "Interage")
 Rel(sm_mobile, sm_ddos, "Acessa", "HTTPS/JSON")
+Rel(sm_web, sm_ddos, "Acessa", "HTTPS/JSON")
 Rel(sm_ddos, sm_gateway, "Acessa", "HTTPS/JSON")
 
 
