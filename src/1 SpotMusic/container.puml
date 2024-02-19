@@ -1,0 +1,72 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+SHOW_PERSON_PORTRAIT()
+' LAYOUT_LEFT_RIGHT()
+
+title Diagrama de container do SpotMusic
+
+Person(usuario, "Usuário do SpotMusic", "Usuário com conta ativa")
+Container(sm_mobile, "Aplicativo nativo", "kotlin/swift", "Acesso mobile do spotmusic")
+Container(sm_web, "Aplicativo web", "react", "Acesso web do spotmusic")
+
+System_Boundary(c1, "SpotMusic") {
+
+    Container(sm_gateway, "API Gateway", "", "Gateway para controle de throttling e redirecionamento de rotas")
+
+    Container(sm_ddos, "DDOS Protection", "", "Proteção contra ataques de DDOS")
+ 
+    Container(sm_account_api, "spotmusic-account-api", "python, fastAPI", "Controle de autenticação/permissão")
+
+    Container(sm_api, "spotmusic-api", "python, fastAPI", "API principal, retorno de musicas/playlists")
+
+    ContainerDb(sm_blob, "spotmusic-blob", "storage account", "Banco de dados dos arquivos brutos de musicas")
+
+    Container(sm_operations_worker, "spotmusic-operations-worker", "python, gunicorn, fastAPI", "Enriquecimento de dados através da conversão de audio em texto")
+    Container(sm_ai_speech, "spotmusic-ai-speech", "speech services", "Serviço de conversão de audio em texto")
+
+    Container(sm_insights_api, "spotmusic-insights-api", "python, fastAPI", "Recomendações de musicas e playlists")
+    Container(sm_insights_worker, "spotmusic-insights-worker", "python, gunicorn", "Cria as recomendações de musicas e playlists")
+
+    Boundary(c2, "PostgreSQL Server") {
+        ContainerDb(sm_account_db, "spotmusic-account-db", "postgresql", "Banco de dados de usários")
+        ContainerDb(sm_db, "spotmusic-db", "postgresql", "Banco de dados da base de musicas/playlists")
+        ContainerDb(sm_insights_db, "spotmusic-insights-db", "postgresql", "Banco de dados para salvar recomendações")
+    }
+
+}
+
+Rel(usuario, sm_mobile, "Interage")
+Rel(usuario, sm_web, "Interage")
+Rel(sm_mobile, sm_ddos, "Acessa", "HTTPS/JSON")
+Rel(sm_web, sm_ddos, "Acessa", "HTTPS/JSON")
+Rel(sm_ddos, sm_gateway, "Acessa", "HTTPS/JSON")
+
+
+Rel(sm_gateway, sm_account_api, "Redireciona", "HTTPS/JSON")
+Rel(sm_gateway, sm_api, "Redireciona", "HTTPS/JSON")
+Rel(sm_gateway, sm_insights_api, "Redireciona", "HTTPS/JSON")
+
+Rel(sm_account_api, sm_account_db, "Leitura/Escrita", "PSYCOPG")
+
+Rel(sm_api, sm_db, "Leitura/Escrita", "PSYCOPG")
+Rel(sm_api, sm_blob, "Leitura", "HTTPS")
+Rel_Neighbor(sm_operations_worker, sm_blob, "Leitura", "HTTPS")
+Rel_Neighbor(sm_operations_worker, sm_db, "Leitura/Escrita", "HTTPS")
+Rel(sm_operations_worker, sm_ai_speech, "Transforma audio em texto", "HTTPS")
+
+
+Rel(sm_insights_api, sm_insights_db, "Leitura dos dados de recomendações", "PSYCOPG")
+Rel(sm_insights_worker, sm_insights_db, "Escrita dos dados de recomendações", "PSYCOPG")
+
+
+
+' Rel(sm_operations_api, sm_operations_db, "Leitura", "PSYCOPG")
+' Rel(sm_operations_api, sm_operations_queue, "Publica mensagem de CRUD", "pull, json", $tags = "async")
+' Rel_Neighbor(sm_operations_queue, sm_operations_worker, "Consome as mensages de CRUD", "pull, json", $tags = "async")
+' Rel_Neighbor(sm_operations_queue, sm_search_api, "Consome as mensagens de CRUD para o ES", "webhook,json", $tags = "async")
+' Rel(sm_operations_worker, sm_operations_db, "Escreve as alterações de CRUD no banco", "PSYCOPG")
+
+
+
+@enduml
