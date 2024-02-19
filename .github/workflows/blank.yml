@@ -21,4 +21,4 @@ jobs:
       - name: C4Builder
         uses: clippings/c4builder-action@v1
         with:
-          path: 'c4/build'
+          path: 'docs/build'
