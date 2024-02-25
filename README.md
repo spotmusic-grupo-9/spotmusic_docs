@@ -41,5 +41,10 @@ Soluções em nuvem para compartilhamento de musicas e playlist 🎶
 - **Descrição**: O [spotmusic_mobile_ios](https://github.com/spotmusic-grupo-9/spotmusic_mobile_ios) é nosso aplicativo mobile ios.
 - **Tecnologias:** [Swift](https://www.apple.com/br/swift/), [SQLite](https://github.com/stephencelis/SQLite.swift)
 
+### Spotmusic WEB
+
+- **Descrição:** O [spotmusic_web](https://github.com/spotmusic-grupo-9/spotmusic_web) é nosso aplicativo web.
+- **Tecnologias:** 
+
 ## Commitlint
 Padrão de commits [link](https://github.com/conventional-changelog/commitlint/?tab=readme-ov-file#what-is-commitlint)
